@@ -1,0 +1,27 @@
+rustup toolchain install nightly-2021-01-07-x86_64-unknown-linux-gnu
+
+rustup component add rust-src --toolchain nightly-2021-01-07-x86_64-unknown-linux-gnu
+
+cargo +nightly-2021-01-07 rustc -Z build-std=core --target my-custom-avr-target.json
+
+
+avr-objdump -D main.elf > dissasm.txt
+avr-objdump -s main.elf > source.txt
+
+
+avarice --jtag /dev/ttyUSB0 --mkII :4242
+or
+simavr -m atmega328p target/my-custom-avr-target/debug/no_std.elf 
+
+avr-gdb target/my-custom-avr-target/debug/no_std.elf
+target remote localhost:1234
+b main
+layout asm
+stepi
+info registers
+x 0x1032 
+
+
+sudo chmod a+rw /dev/ttyUSB0
+avrdude -p atmega328p -c arduino -P /dev/ttyUSB0 -U flash:w:output-e2c1e1a90f8d60a7.elf
+

@@ -1,0 +1,24 @@
+
+rustc +nightly --print target-spec-json -Z unstable-options --target avr-unknown-gnu-atmega328 > my-custom-avr-target.json
+
+
+rustc +nightly -C link-arg=-nostdlib -C link-arg=-nostartfiles -C link-arg=-ffreestanding -C panic=abort -C link-arg=-mno-red-zone file1.rs --emit=obj --target my-custom-avr-target.json
+
+
+
+avr-ld -Map sections.map  -n --gc-sections -T linker.ld -o main.elf file1.o file2.o
+or
+rustc +nightly -C linker-flavor=ld.lld -C linker=rust-lld -C link-arg=-Tlinker-rust-lld.ld -C link-arg=-Map=mmap.map file1.rs -o main.elf  --target my-custom-avr-target.json
+
+
+avarice --jtag /dev/ttyUSB0 --mkII :4242
+or
+simavr -m atmega328p main.elf
+
+avr-gdb target/my-custom-avr-target/debug/no_std.elf
+target remote localhost:1234
+b main
+layout asm
+stepi
+info registers
+x 0x1032 
