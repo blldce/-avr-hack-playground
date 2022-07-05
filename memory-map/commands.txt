@@ -1,0 +1,9 @@
+simavr -m atmega328p -f 16000000 main.hex 
+
+avr-gdb main.hex 
+target remote localhost:1234
+b main
+layout asm
+stepi
+info registers
+x 0x1032 
