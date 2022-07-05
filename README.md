@@ -1,2 +1,2 @@
-# -avr-hack-playground
+# avr-hack-playground
 Hack free AVR playground 
